@@ -2,6 +2,14 @@
 
 require File.dirname(__FILE__) + '/../lib/environment'
 
+OptionParser.new { |op|
+  op.on('-e env')    { |val| set :environment, val.to_sym }
+  op.on('-s server') { |val| set :server, val }
+  op.on('-p port')   { |val| set :port, val.to_i }
+}.parse!(ARGV.dup)
+
+set :run, true
+
 before do
   unless (GODWEB_CONFIG['username'].nil? && GODWEB_CONFIG['password'].nil?) || self.request.path_info == '/heartbeat'
     authenticate_or_request_with_http_basic "GodWeb" do
